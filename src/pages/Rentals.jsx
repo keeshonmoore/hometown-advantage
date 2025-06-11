@@ -4,50 +4,21 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Bed, Bath, Search, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import properties from '../data/rent.json';
 
-const properties = [
-  {
-    id: 'rental-1',
-    image: 'https://cdn.pixabay.com/photo/2016/11/29/03/53/house-1867187_1280.jpg',
-    badge: 'Available',
-    price: '$1,500/mo',
-    address: '123 Main St, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-  {
-    id: 'rental-2',
-    image: 'https://cdn.pixabay.com/photo/2017/03/22/17/39/kitchen-2165756_1280.jpg',
-    badge: 'New',
-    price: '$2,200/mo',
-    address: '456 Oak Ave, Phoenix, AZ',
-    beds: 4,
-    baths: 3,
-  },
-  {
-    id: 'rental-3',
-    image: 'https://cdn.pixabay.com/photo/2016/06/24/10/47/house-1477041_1280.jpg',
-    badge: 'Available',
-    price: '$1,200/mo',
-    address: '789 Pine Rd, White Mountains, AZ',
-    beds: 2,
-    baths: 1,
-  },
-  {
-    id: 'rental-4',
-    image: 'https://cdn.pixabay.com/photo/2017/07/09/03/19/home-2486092_1280.jpg',
-    badge: 'New',
-    price: '$1,800/mo',
-    address: '101 Elm St, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-];
+const propertiesWithIds = properties.map((property, index) => ({
+  ...property,
+  id: `rental-${index + 1}`,
+  beds: property.bed || 'N/A',
+  baths: property.bath || 'N/A',
+  badge: index % 2 === 0 ? 'Available' : 'New',
+  image: property.images.links[0] || 'https://cdn.pixabay.com/photo/2016/11/29/03/53/house-1867187_1280.jpg',
+}));
 
 function Rentals() {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredProperties = properties.filter((property) =>
+  const filteredProperties = propertiesWithIds.filter((property) =>
     property.address.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

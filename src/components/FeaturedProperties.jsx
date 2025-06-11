@@ -2,49 +2,17 @@ import { useState } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Bed, Bath, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import propertiesData from '../data/house_details.json';
 
-const properties = [
-  {
-    image: 'https://cdn.pixabay.com/photo/2016/11/29/03/53/house-1867187_1280.jpg',
-    badge: 'Featured',
-    price: '$450,000',
-    address: '123 Main St, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-  {
-    image: 'https://cdn.pixabay.com/photo/2017/03/22/17/39/kitchen-2165756_1280.jpg',
-    badge: 'New',
-    price: '$625,000',
-    address: '456 Oak Ave, Phoenix, AZ',
-    beds: 4,
-    baths: 3,
-  },
-  {
-    image: 'https://cdn.pixabay.com/photo/2016/06/24/10/47/house-1477041_1280.jpg',
-    badge: 'Featured',
-    price: '$375,000',
-    address: '789 Pine Rd, White Mountains, AZ',
-    beds: 2,
-    baths: 2,
-  },
-  {
-    image: 'https://cdn.pixabay.com/photo/2017/07/09/03/19/home-2486092_1280.jpg',
-    badge: 'New',
-    price: '$550,000',
-    address: '101 Elm St, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-  {
-    image: 'https://cdn.pixabay.com/photo/2014/11/10/04/08/suburb-525116_1280.jpg',
-    badge: 'Featured',
-    price: '$700,000',
-    address: '202 Birch Ln, Phoenix, AZ',
-    beds: 5,
-    baths: 4,
-  },
-];
+const properties = propertiesData.slice(0, 8).map((property, index) => ({
+  ...property,
+  id: `featured-${index + 1}`,
+  beds: property.bed || 'N/A',
+  baths: property.bath || 'N/A',
+  badge: index % 2 === 0 ? 'Featured' : 'New',
+  image: property.images.links[0] || 'https://cdn.pixabay.com/photo/2016/11/29/03/53/house-1867187_1280.jpg',
+}));
 
 function FeaturedProperties() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -74,34 +42,36 @@ function FeaturedProperties() {
                   key={index}
                   className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 px-2"
                 >
-                  <Card className="bg-white shadow-apple rounded-xl transition-transform hover:scale-105 h-full flex flex-col">
-                    <div className="relative">
-                      <img
-                        src={property.image}
-                        alt={`Property at ${property.address}`}
-                        className="w-full h-48 object-cover rounded-t-xl"
-                      />
-                      <span className="absolute top-2 right-2 bg-primary text-white text-sm font-semibold px-2 py-1 rounded-md">
-                        {property.badge}
-                      </span>
-                    </div>
-                    <CardContent className="flex-grow p-4">
-                      <p className="text-2xl font-bold text-secondary mb-2">
-                        {property.price}
-                      </p>
-                      <p className="text-secondary mb-2">{property.address}</p>
-                      <div className="flex items-center gap-4 text-secondary">
-                        <div className="flex items-center gap-1">
-                          <Bed className="h-5 w-5" />
-                          <span>{property.beds} Bed</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Bath className="h-5 w-5" />
-                          <span>{property.baths} Bath</span>
-                        </div>
+                  <Link to={`/property/${property.id}`} className="block">
+                    <Card className="bg-white shadow-apple rounded-xl transition-transform hover:scale-105 h-full flex flex-col">
+                      <div className="relative">
+                        <img
+                          src={property.image}
+                          alt={`Property at ${property.address}`}
+                          className="w-full h-48 object-cover rounded-t-xl"
+                        />
+                        <span className="absolute top-2 right-2 bg-primary text-white text-sm font-semibold px-2 py-1 rounded-md">
+                          {property.badge}
+                        </span>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <CardContent className="flex-grow p-4">
+                        <p className="text-2xl font-bold text-secondary mb-2">
+                          {property.price}
+                        </p>
+                        <p className="text-secondary mb-2">{property.address}</p>
+                        <div className="flex items-center gap-4 text-secondary">
+                          <div className="flex items-center gap-1">
+                            <Bed className="h-5 w-5" />
+                            <span>{property.beds} Bed</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Bath className="h-5 w-5" />
+                            <span>{property.baths} Bath</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </div>
               ))}
             </div>

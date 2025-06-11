@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Card, CardContent, CardFooter, CardHeader } from './ui/card';
+import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 import { Phone } from 'lucide-react';
 
@@ -60,7 +60,7 @@ const teamMembers = {
       position: 'Realtor / Phoenix Office Manager',
       phone: '520-471-1864',
       image: './team/teresaG.avif',
-    }
+    },
   ],
 };
 
@@ -97,7 +97,7 @@ function MeetTheTeam() {
                     <img
                       src={member.image}
                       alt={`${member.name} headshot`}
-                      className="w-full h-48 object-cover rounded-t-xl"
+                      className="w-full h-64 object-cover rounded-t-xl"
                     />
                   </CardHeader>
                   <CardContent className="flex-grow p-4 text-center">
@@ -105,16 +105,23 @@ function MeetTheTeam() {
                       {member.name}
                     </h3>
                     <p className="text-secondary mb-2">{member.position}</p>
-                    <div className="flex items-center justify-center gap-2 text-secondary">
-                      <Phone className="h-4 w-4" />
-                      <span>{member.phone}</span>
-                    </div>
+                    {member.phone && (
+                      <div className="flex items-center justify-center gap-2 text-secondary mb-4">
+                        <Phone className="h-4 w-4" />
+                        <span>{member.phone}</span>
+                      </div>
+                    )}
+                    {member.phone && (
+                      <Button
+                        className="bg-primary text-white hover:bg-opacity-90 rounded-xl w-full mt-4"
+                        asChild
+                      >
+                        <a href={`tel:${member.phone.replace(/\D/g, '')}`} aria-label={`Call ${member.name}`}>
+                          Call {member.phone}
+                        </a>
+                      </Button>
+                    )}
                   </CardContent>
-                  <CardFooter className="p-4">
-                    <Button className="bg-primary text-white hover:bg-opacity-90 rounded-xl w-full">
-                      Read Full Bio
-                    </Button>
-                  </CardFooter>
                 </Card>
               ))}
             </div>
@@ -130,7 +137,7 @@ function MeetTheTeam() {
                     <img
                       src={member.image}
                       alt={`${member.name} headshot`}
-                      className="w-full h-48 object-cover rounded-t-xl"
+                      className="w-full h-64 object-cover rounded-t-xl"
                     />
                   </CardHeader>
                   <CardContent className="flex-grow p-4 text-center">
@@ -138,16 +145,23 @@ function MeetTheTeam() {
                       {member.name}
                     </h3>
                     <p className="text-secondary mb-2">{member.position}</p>
-                    <div className="flex items-center justify-center gap-2 text-secondary">
-                      <Phone className="h-4 w-4" />
-                      <span>{member.phone}</span>
-                    </div>
+                    {member.phone && (
+                      <div className="flex items-center justify-center gap-2 text-secondary mb-4">
+                        <Phone className="h-4 w-4" />
+                        <span>{member.phone}</span>
+                      </div>
+                    )}
+                    {member.phone && (
+                      <Button
+                        className="bg-primary text-white hover:bg-opacity-90 rounded-xl w-full mt-4"
+                        asChild
+                      >
+                        <a href={`tel:${member.phone.replace(/\D/g, '')}`} aria-label={`Call ${member.name}`}>
+                          Call {member.phone}
+                        </a>
+                      </Button>
+                    )}
                   </CardContent>
-                  <CardFooter className="p-4">
-                    <Button className="bg-primary text-white hover:bg-opacity-90 rounded-xl w-full">
-                      Read Full Bio
-                    </Button>
-                  </CardFooter>
                 </Card>
               ))}
             </div>

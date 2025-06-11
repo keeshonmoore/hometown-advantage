@@ -12,6 +12,8 @@ function ContactForm() {
     message: '',
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,16 +35,39 @@ function ContactForm() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    console.log('Form submitted:', formData);
-    setFormData({ name: '', email: '', phone: '', message: '' });
-    setErrors({});
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch(import.meta.env.VITE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, section: 'contact' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Webhook request failed');
+      }
+
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      setErrors({});
+      setSubmitStatus('success');
+      setTimeout(() => setSubmitStatus(null), 3000);
+    } catch (error) {
+      console.error('Webhook error:', error);
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus(null), 3000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -66,6 +91,7 @@ function ContactForm() {
                   placeholder="Your full name"
                   className="rounded-xl shadow-apple bg-white border-gray-300"
                   aria-describedby={errors.name ? 'name-error' : undefined}
+                  disabled={isSubmitting}
                 />
                 {errors.name && (
                   <p id="name-error" className="text-primary text-sm mt-1">
@@ -86,6 +112,7 @@ function ContactForm() {
                   placeholder="Your email address"
                   className="rounded-xl shadow-apple bg-white border-gray-300"
                   aria-describedby={errors.email ? 'email-error' : undefined}
+                  disabled={isSubmitting}
                 />
                 {errors.email && (
                   <p id="email-error" className="text-primary text-sm mt-1">
@@ -104,6 +131,7 @@ function ContactForm() {
                   onChange={handleChange}
                   placeholder="Your phone number"
                   className="rounded-xl shadow-apple bg-white border-gray-300"
+                  disabled={isSubmitting}
                 />
               </div>
               <div>
@@ -118,6 +146,7 @@ function ContactForm() {
                   placeholder="Your message"
                   className="rounded-xl shadow-apple bg-white border-gray-300 min-h-[120px]"
                   aria-describedby={errors.message ? 'message-error' : undefined}
+                  disabled={isSubmitting}
                 />
                 {errors.message && (
                   <p id="message-error" className="text-primary text-sm mt-1">
@@ -128,9 +157,16 @@ function ContactForm() {
               <Button
                 type="submit"
                 className="bg-primary text-white hover:bg-opacity-90 rounded-xl"
+                disabled={isSubmitting}
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
+              {submitStatus === 'success' && (
+                <p className="text-sm text-primary text-center">Message sent successfully!</p>
+              )}
+              {submitStatus === 'error' && (
+                <p className="text-sm text-primary text-center">Failed to send message. Please try again.</p>
+              )}
             </form>
           </div>
           <div className="lg:w-1/2">

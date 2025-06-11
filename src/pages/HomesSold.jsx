@@ -4,125 +4,24 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Bed, Bath, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import properties from '../data/sold.json';
 
-const properties = [
-  {
-    id: 'sold-1',
-    image: 'https://cdn.pixabay.com/photo/2016/11/29/03/53/house-1867187_1280.jpg',
-    badge: 'Sold',
-    price: '$450,000',
-    address: '123 Main St, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-  {
-    id: 'sold-2',
-    image: 'https://cdn.pixabay.com/photo/2017/03/22/17/39/kitchen-2165756_1280.jpg',
-    badge: 'Recently Sold',
-    price: '$625,000',
-    address: '456 Oak Ave, Phoenix, AZ',
-    beds: 4,
-    baths: 3,
-  },
-  {
-    id: 'sold-3',
-    image: 'https://cdn.pixabay.com/photo/2016/06/24/10/47/house-1477041_1280.jpg',
-    badge: 'Sold',
-    price: '$375,000',
-    address: '789 Pine Rd, White Mountains, AZ',
-    beds: 2,
-    baths: 1,
-  },
-  {
-    id: 'sold-4',
-    image: 'https://cdn.pixabay.com/photo/2017/07/09/03/19/home-2486092_1280.jpg',
-    badge: 'Recently Sold',
-    price: '$550,000',
-    address: '101 Elm St, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-  {
-    id: 'sold-5',
-    image: 'https://cdn.pixabay.com/photo/2016/11/18/17/46/house-1836070_1280.jpg',
-    badge: 'Sold',
-    price: '$480,000',
-    address: '202 Cedar Dr, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-  {
-    id: 'sold-6',
-    image: 'https://cdn.pixabay.com/photo/2017/08/01/12/43/kitchen-2565105_1280.jpg',
-    badge: 'Recently Sold',
-    price: '$650,000',
-    address: '303 Maple Way, Phoenix, AZ',
-    beds: 4,
-    baths: 3,
-  },
-  {
-    id: 'sold-7',
-    image: 'https://cdn.pixabay.com/photo/2016/11/29/04/19/ocean-1867285_1280.jpg',
-    badge: 'Sold',
-    price: '$390,000',
-    address: '404 Spruce Ct, White Mountains, AZ',
-    beds: 2,
-    baths: 1,
-  },
-  {
-    id: 'sold-8',
-    image: 'https://cdn.pixabay.com/photo/2017/03/28/12/11/chairs-2181380_1280.jpg',
-    badge: 'Recently Sold',
-    price: '$520,000',
-    address: '505 Willow St, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-  {
-    id: 'sold-9',
-    image: 'https://cdn.pixabay.com/photo/2017/03/28/12/06/chairs-2181360_1280.jpg',
-    badge: 'Sold',
-    price: '$680,000',
-    address: '606 Aspen Rd, Phoenix, AZ',
-    beds: 5,
-    baths: 4,
-  },
-  {
-    id: 'sold-10',
-    image: 'https://cdn.pixabay.com/photo/2016/11/29/04/17/architecture-1867407_1280.jpg',
-    badge: 'Recently Sold',
-    price: '$460,000',
-    address: '707 Laurel Ave, Yuma, AZ',
-    beds: 3,
-    baths: 2,
-  },
-  {
-    id: 'sold-11',
-    image: 'https://cdn.pixabay.com/photo/2017/03/28/12/10/chairs-2181370_1280.jpg',
-    badge: 'Sold',
-    price: '$600,000',
-    address: '808 Sycamore Ln, Phoenix, AZ',
-    beds: 4,
-    baths: 3,
-  },
-  {
-    id: 'sold-12',
-    image: 'https://cdn.pixabay.com/photo/2016/11/29/04/16/architecture-1867417_1280.jpg',
-    badge: 'Recently Sold',
-    price: '$410,000',
-    address: '909 Poplar Dr, White Mountains, AZ',
-    beds: 2,
-    baths: 2,
-  },
-];
+const propertiesWithIds = properties.map((property, index) => ({
+  ...property,
+  id: `sold-${index + 1}`,
+  beds: property.bed || 'N/A',
+  baths: property.bath || 'N/A',
+  badge: index % 2 === 0 ? 'Sold' : 'Recently Sold',
+  image: property.images.links[0] || 'https://cdn.pixabay.com/photo/2016/11/29/03/53/house-1867187_1280.jpg',
+}));
 
 function HomesSold() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const propertiesPerPage = 12;
-  const totalPages = Math.ceil(properties.length / propertiesPerPage);
+  const totalPages = Math.ceil(propertiesWithIds.length / propertiesPerPage);
 
-  const filteredProperties = properties.filter((property) =>
+  const filteredProperties = propertiesWithIds.filter((property) =>
     property.address.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

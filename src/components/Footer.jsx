@@ -26,13 +26,44 @@ const contactLinks = [
 function Footer() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
-  const handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    if (email.trim()) {
+    if (!email.trim()) {
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus(null), 3000);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch(import.meta.env.VITE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, section: 'newsletter' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Webhook request failed');
+      }
+
       setIsSubmitted(true);
       setEmail('');
-      setTimeout(() => setIsSubmitted(false), 3000);
+      setSubmitStatus('success');
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setSubmitStatus(null);
+      }, 3000);
+    } catch (error) {
+      console.error('Webhook error:', error);
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus(null), 3000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -118,10 +149,17 @@ function Footer() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="rounded-xl shadow-apple bg-white text-secondary"
                 aria-label="Newsletter subscription"
+                disabled={isSubmitting}
               />
-              <Button className="bg-primary text-white hover:bg-opacity-90 rounded-xl">
-                Subscribe
+              <Button
+                className="bg-primary text-white hover:bg-opacity-90 rounded-xl"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Subscribing...' : 'Subscribe'}
               </Button>
+              {submitStatus === 'error' && (
+                <p className="text-sm text-primary text-center">Please enter a valid email.</p>
+              )}
             </form>
           )}
         </div>
